@@ -1,0 +1,11 @@
+2025-09-10 21:00:59,127 - INFO - ====== WebDriver manager ======
+2025-09-10 21:01:00,001 - INFO - Get LATEST chromedriver version for google-chrome
+2025-09-10 21:01:00,107 - INFO - Get LATEST chromedriver version for google-chrome
+2025-09-10 21:01:00,191 - INFO - Driver [C:\Users\elton\.wdm\drivers\chromedriver\win64\140.0.7339.82\chromedriver-win32/chromedriver.exe] found in cache
+2025-09-10 21:01:01,248 - INFO - Chrome configurado com sucesso
+2025-09-10 21:01:01,248 - INFO - Abrindo Instagram...
+2025-09-10 21:01:06,959 - INFO - Inserindo credenciais: eltons.souz@gmail.com
+2025-09-10 21:01:17,123 - INFO - URL atual: https://www.instagram.com/accounts/login/two_factor?next=%2F
+2025-09-10 21:01:17,125 - INFO - 2FA detectado - iniciando sistema completo
+2025-09-10 21:01:17,125 - INFO - === INICIANDO NOTIFICAÇÕES 2FA ===
+2025-09-10 21:01:19,203 - ERROR - Erro no 2FA: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>

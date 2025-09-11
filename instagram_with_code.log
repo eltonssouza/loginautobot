@@ -1,0 +1,6 @@
+2025-09-10 21:09:01,246 - INFO - ====== WebDriver manager ======
+2025-09-10 21:09:02,103 - INFO - Get LATEST chromedriver version for google-chrome
+2025-09-10 21:09:02,215 - INFO - Get LATEST chromedriver version for google-chrome
+2025-09-10 21:09:02,551 - INFO - Driver [C:\Users\elton\.wdm\drivers\chromedriver\win64\140.0.7339.82\chromedriver-win32/chromedriver.exe] found in cache
+2025-09-10 21:09:03,566 - INFO - Chrome configurado com sucesso
+2025-09-10 21:09:03,566 - INFO - Abrindo Instagram...
