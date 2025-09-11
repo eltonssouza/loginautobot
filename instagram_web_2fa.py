@@ -44,6 +44,7 @@ class InstagramWeb2FA:
         self.driver = None
         self.wait = None
         self.flask_app = Flask(__name__)
+        self.flask_app.config['SECRET_KEY'] = 'instagram_2fa_secret_key'
         self.two_fa_code = None
         self.code_received = threading.Event()
         self.server_thread = None
@@ -404,11 +405,22 @@ class InstagramWeb2FA:
     def start_web_server(self):
         """Inicia servidor web em thread separada"""
         def run_server():
-            self.flask_app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False)
+            try:
+                self.flask_app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False, threaded=True)
+            except Exception as e:
+                logger.error(f"Erro no servidor Flask: {e}")
         
         self.server_thread = threading.Thread(target=run_server, daemon=True)
         self.server_thread.start()
-        time.sleep(2)  # Aguardar servidor iniciar
+        time.sleep(3)  # Aguardar servidor iniciar
+        
+        # Verificar se servidor está funcionando
+        try:
+            import requests
+            response = requests.get('http://127.0.0.1:5000', timeout=5)
+            logger.info("Servidor web verificado e funcionando")
+        except Exception as e:
+            logger.warning(f"Aviso: Não foi possível verificar servidor: {e}")
     
     def setup_driver(self) -> bool:
         """Setup Chrome WebDriver"""

@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(python:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(findstr:*)",
+      "Bash(curl:*)",
+      "Bash(tasklist)",
+      "Bash(wmic process:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []
