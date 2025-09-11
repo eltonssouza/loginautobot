@@ -25,11 +25,8 @@ try:
 except ImportError:
     WEBDRIVER_MANAGER_AVAILABLE = False
 
-try:
-    import winsound
-    SOUND_AVAILABLE = True
-except ImportError:
-    SOUND_AVAILABLE = False
+# Biblioteca de som removida conforme solicitado
+SOUND_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -209,6 +206,33 @@ class InstagramWeb2FA:
             font-size: 0.9em;
             color: #666;
         }
+        
+        .continue-btn {
+            background: #0095f6;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .continue-btn:hover {
+            background: #0082d8;
+        }
+        
+        .success-container {
+            text-align: center;
+            padding: 20px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -320,12 +344,16 @@ class InstagramWeb2FA:
                 
                 if (result.success) {
                     resultDiv.innerHTML = `
-                        <div class="success">
-                            [OK] Codigo enviado com sucesso!<br>
-                            [WAIT] Aguarde... O login esta sendo processado
+                        <div class="success-container">
+                            <h3>[OK] Codigo Aceito com Sucesso!</h3>
+                            <p>Voce foi logado no Instagram!</p>
+                            <button class="continue-btn" onclick="window.close(); window.location.href='https://www.instagram.com';">
+                                Continuar no Instagram
+                            </button>
                         </div>
                     `;
-                    submitBtn.textContent = '[OK] Codigo Enviado';
+                    submitBtn.style.display = 'none';
+                    document.getElementById('codeForm').style.display = 'none';
                 } else {
                     resultDiv.innerHTML = `
                         <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 10px; margin-top: 20px;">
@@ -416,12 +444,7 @@ class InstagramWeb2FA:
             logger.info("Abrindo interface web para 2FA...")
             
             # Som de notificação
-            if SOUND_AVAILABLE:
-                try:
-                    winsound.Beep(1000, 500)
-                    winsound.Beep(1200, 500)
-                except:
-                    pass
+            # Som removido conforme solicitado
             
             # Abrir no navegador
             webbrowser.open('http://127.0.0.1:5000')
@@ -544,7 +567,44 @@ class InstagramWeb2FA:
             code_field.send_keys(Keys.RETURN)
             logger.info("[OK] Codigo enviado para Instagram")
             
-            time.sleep(15)
+            time.sleep(5)
+            
+            # Procurar e clicar no botão azul de confirmação
+            try:
+                print("[INFO] Procurando botao azul de confirmacao...")
+                
+                # Múltiplos seletores para o botão azul do Instagram
+                button_selectors = [
+                    "//button[contains(text(), 'Confirm') or contains(text(), 'Continue') or contains(text(), 'Next')]",
+                    "//button[@type='submit'][not(@name)]",
+                    "//div[@role='button'][contains(@style, 'background')]",
+                    "//button[contains(@style, 'background-color')]",
+                    "//div[contains(@class, '_acan')]",  # Classe comum de botões do Instagram
+                    "//div[@role='button'][last()]"
+                ]
+                
+                button_clicked = False
+                for selector in button_selectors:
+                    try:
+                        blue_button = WebDriverWait(self.driver, 3).until(
+                            EC.element_to_be_clickable((By.XPATH, selector))
+                        )
+                        if blue_button:
+                            print(f"[CLICK] Clicando no botao encontrado")
+                            blue_button.click()
+                            button_clicked = True
+                            time.sleep(2)
+                            break
+                    except TimeoutException:
+                        continue
+                
+                if not button_clicked:
+                    print("[WARNING] Botao azul nao encontrado automaticamente")
+                    
+            except Exception as e:
+                print(f"[WARNING] Erro ao procurar botao azul: {e}")
+            
+            time.sleep(10)
             
             # Verificar resultado
             url = self.driver.current_url
@@ -554,13 +614,7 @@ class InstagramWeb2FA:
                 print("[OK] Voce esta oficialmente logado no Instagram!")
                 
                 # Som de sucesso
-                if SOUND_AVAILABLE:
-                    try:
-                        winsound.Beep(1000, 200)
-                        winsound.Beep(1200, 200)
-                        winsound.Beep(1500, 300)
-                    except:
-                        pass
+                # Som removido conforme solicitado
                 
                 return True
             else:
@@ -598,12 +652,17 @@ class InstagramWeb2FA:
             success = self.login_to_instagram()
             
             if success:
-                print("\n" + "🎉"*25)
-                print("🎉 SUCESSO TOTAL - SISTEMA WEB FUNCIONOU! 🎉")
-                print("🎉"*25)
+                print("\n" + "="*50)
+                print("[SUCCESS] SUCESSO TOTAL - SISTEMA WEB FUNCIONOU!")
+                print("="*50)
                 print("[WEB] Voce esta logado via interface web!")
-                print("⏳ Mantendo sessão por 2 minutos...")
-                time.sleep(120)
+                print("[INFO] Navegador permanecera aberto para continuar no Instagram")
+                print("[INFO] Pressione Ctrl+C para encerrar quando desejar")
+                try:
+                    while True:
+                        time.sleep(10)  # Manter indefinidamente
+                except KeyboardInterrupt:
+                    print("\n[INFO] Encerrando conforme solicitado...")
             else:
                 print("\n[ERROR] Login falhou")
             
@@ -613,8 +672,8 @@ class InstagramWeb2FA:
             logger.error(f"Erro: {e}")
             return False
         finally:
-            if self.driver:
-                self.driver.quit()
+            # NAO fechar o driver - manter janela aberta conforme solicitado
+            print("[INFO] Janela do navegador mantida aberta para continuar no Instagram")
 
 def main():
     """Função principal"""
